@@ -6,7 +6,7 @@ Pytorch implementation of [Optimization as a Model for Few-shot Learning](https:
 - python 3+
 - pytorch 0.4+ (developed on 1.0.1 with cuda 9.0)
 - [pillow](https://pillow.readthedocs.io/en/stable/installation.html)
-- [tqdm](https://tqdm.github.io/) (a nice progress bar)
+- [tqdm](https://tqdm.github.io/) (for progress bar)
 
 ## Data
   - You can download it from [here](https://drive.google.com/file/d/1rV3aj_hgfNTfCakffpPm7Vhpr1in87CR/view?usp=sharing) (~2.7GB, google drive link)
@@ -31,7 +31,7 @@ Pytorch implementation of [Optimization as a Model for Few-shot Learning](https:
   - ...
   ```
   - It'd be set if you download and extract Mini-Imagenet from the link above
-- Check out ``, make sure `--data-root` is properly set in main.py
+- Check out, make sure `--data-root` is properly set in `main.py`
 
 ## Run
 For 5-shot, 5-class training, run
@@ -41,15 +41,13 @@ python main.py
 Hyper-parameters are referred to the [author's repo](https://github.com/twitter/meta-learning-lstm).
 
 For 5-shot, 5-class evaluation, run *(remember to change `--resume` and `--seed` arguments)*
-Also change the mode to test intead of train
+Also change the mode to ```test``` intead of ```train```
 ```bash
 python main.py
 ```
 
 
 ## References
-- [markdtw](https://github.com/markdtw/meta-learning-lstm-pytorch) (Implementation guide)
-- [CloserLookFewShot](https://github.com/wyharveychen/CloserLookFewShot) (Data loader)
-- [pytorch-meta-optimizer](https://github.com/ikostrikov/pytorch-meta-optimizer) (Casting `nn.Parameters` to `torch.Tensor` inspired from here)
-- [meta-learning-lstm](https://github.com/twitter/meta-learning-lstm) (Author's repo in Lua Torch)
+- [markdtw](https://github.com/markdtw/meta-learning-lstm-pytorch) (Implementation inspiration)
+
 
