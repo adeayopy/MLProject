@@ -17,35 +17,35 @@ from dataloader import prepare_data
 from utils import *
 from graph import *
 
-cpu=False
-mode='train' #run this file in train of evaluation mode
+cpu=True
+mode='test' #run this file in train of evaluation mode
 save='logs' # Part of path to log file during training
 log_freq=100 # Frequency to log training result
 
 data_root='data/miniImagenet/'
-n_shot=5
+n_shot=5 # Support examples or example per class
 n_eval=15
-n_workers=4
-pin_mem=True
-episode=50000 
-episode_val=100
-n_class=5
+n_workers=4 # workers used for data loading
+pin_mem=False
+episode=50000 #episode for training
+episode_val=600
+n_class=5 #class per episode
 image_size=84
 bn_eps=1e-3
 bn_momentum=0.95
 input_size=4
 hidden_size=20
-lr=1e-3
+lr=1e-3 #learning rate
 epoch=8
 batch_size=25
 grad_clip=0.5
 val_freq=1000 # frequency to evaluate metalearner on validation set
-seed=None
+seed=None # # random seed to ensure the reproducibility and consistency of result 
 if seed is None:
         seed=random.randint(0, 1e3)
 
-#test
-resume=None #'logs-719/ckpts/meta-learner-42000.pth.tar'
+#use during test/training resumption
+resume='logs-53/ckpts/meta-learner-42000.pth.tar'
 
 
  
@@ -76,7 +76,7 @@ def meta_test(eps, eval_loader, learner_w_grad, learner_wo_grad, metalearner,log
 
 def train_learner(learner_w_grad, metalearner, train_input, train_target, epoch, batch_size):
     cI = metalearner.metalstm.cI.data #Get metalearner parameters
-    hs = [None]
+    hs = [None] #
     for _ in range(epoch): # Loop through the dataset. Default is 8 times
         for i in range(0, len(train_input), batch_size): #train_input is one episode which has class*data/pclass. Take 8 samples from the episode 
             x = train_input[i:i+batch_size] #get batch from training episode 
@@ -99,7 +99,6 @@ def train_learner(learner_w_grad, metalearner, train_input, train_target, epoch,
             cI, h = metalearner(metalearner_input, hs[-1])
             hs.append(h)
 
-            #print("training loss: {:8.6f} acc: {:6.3f}, mean grad: {:8.6f}".format(loss, acc, torch.mean(grad)))
 
     return cI
 
@@ -107,13 +106,7 @@ def train_learner(learner_w_grad, metalearner, train_input, train_target, epoch,
 
 def main():
 
-    # args, unparsed = FLAGS.parse_known_args()
-    # if len(unparsed) != 0:
-    #     raise NameError("Argument {} not recognized".format(unparsed))
-
     
-    
-    # random seed to ensure the reproducibility and consistency of result 
     random.seed(seed)
     np.random.seed(seed)
     torch.manual_seed(seed)
@@ -165,8 +158,6 @@ def main():
     logger.loginfo("Start training")
     # Meta-training
     for eps, (episode_x, episode_y) in enumerate(train_loader):
-        # episode_x.shape = [n_class, n_shot + n_eval, c, h, w]
-        # episode_y.shape = [n_class, n_shot + n_eval] --> NEVER USED
 
         # get train and test data and labels
         train_input = episode_x[:, :n_shot].reshape(-1, *episode_x.shape[-3:]).to(dev) # [n_class * n_shot, :]
@@ -214,8 +205,9 @@ def main():
             if acc > best_acc:
                 best_acc = acc
                 logger.loginfo("* Best accuracy so far *\n")
-    plotgraph(logger.saven())
-    logger.loginfo("Done")
+    plotgraph(logger.saven()) #Plot loss and accuracy graph using the graph.py file
+    if mode =='train':
+        logger.loginfo("Done")
 
 
 if __name__ == '__main__':

@@ -19,7 +19,7 @@ from tqdm import tqdm
 class EpisodeDataset(data.Dataset):
 
     def __init__(self, root, phase='train', n_shot=5, n_eval=15, transform=None):
-        """Args:
+        """
             root (str): path to data
             phase (str): train, val or test
             n_shot (int): how many examples per class for training (k/n_support)
@@ -83,7 +83,7 @@ class EpisodicSampler(data.Sampler):
 def prepare_data(data_root, n_shot, n_eval, image_size, n_workers,pin_mem, episode, episode_val, n_class):
 
     normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
-    #Load data and apply transformation
+    #Load data and apply augumentation/transformation
     train_set = EpisodeDataset(data_root, 'train', n_shot, n_eval,
         transform=transforms.Compose([
             transforms.RandomResizedCrop(image_size),
